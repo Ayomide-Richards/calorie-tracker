@@ -54,3 +54,4 @@ No build step or server required.
 ## 📄 License
 
 MIT License. Free to use and modify for personal or educational purposes.
+
