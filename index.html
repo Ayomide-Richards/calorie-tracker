@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalorieTracker - Vanilla Health & Diet Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-icon">&#127822;</div>
+        <div>
+          <h1>CalorieTracker</h1>
+          <p class="subtitle">Daily Calorie & Macro Log</p>
+        </div>
+      </div>
+
+      <!-- Date Navigator -->
+      <div class="date-navigator">
+        <button id="prevDayBtn" class="btn btn-icon" title="Previous Day">&#9664;</button>
+        <div class="date-input-wrapper">
+          <input type="date" id="datePicker">
+          <span id="dateDisplay" class="date-display">Today</span>
+        </div>
+        <button id="nextDayBtn" class="btn btn-icon" title="Next Day">&#9654;</button>
+        <button id="todayBtn" class="btn btn-secondary btn-sm">Today</button>
+      </div>
+
+      <button id="settingsBtn" class="btn btn-secondary" title="Daily Goals Settings">
+        &#9881; Goals
+      </button>
+    </header>
+
+    <!-- Dashboard Summary -->
+    <section class="dashboard">
+      <div class="card summary-card">
+        <div class="calorie-metrics">
+          <div class="metric">
+            <span class="metric-label">Consumed</span>
+            <span id="consumedCalories" class="metric-val">0</span>
+            <span class="metric-unit">kcal</span>
+          </div>
+          <div class="metric-divider">/</div>
+          <div class="metric">
+            <span class="metric-label">Daily Goal</span>
+            <span id="goalCalories" class="metric-val">2000</span>
+            <span class="metric-unit">kcal</span>
+          </div>
+          <div class="metric-divider">=</div>
+          <div class="metric highlight">
+            <span class="metric-label" id="remainingLabel">Remaining</span>
+            <span id="remainingCalories" class="metric-val">2000</span>
+            <span class="metric-unit">kcal</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-bar-bg">
+            <div id="calorieProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="progress-labels">
+            <span id="caloriePercentText">0% of daily goal</span>
+            <span id="calorieStatusBadge" class="badge badge-normal">On Track</span>
+          </div>
+        </div>
+
+        <!-- Macro Breakdown -->
+        <div class="macros-grid">
+          <div class="macro-item macro-protein">
+            <div class="macro-header">
+              <span class="macro-title">Protein</span>
+              <span id="proteinStat" class="macro-amount">0g / 120g</span>
+            </div>
+            <div class="macro-progress-bg">
+              <div id="proteinProgressBar" class="macro-progress-fill" style="width: 0%;"></div>
+            </div>
+            <span id="proteinKcal" class="macro-kcal">0 kcal</span>
+          </div>
+
+          <div class="macro-item macro-carbs">
+            <div class="macro-header">
+              <span class="macro-title">Carbs</span>
+              <span id="carbsStat" class="macro-amount">0g / 220g</span>
+            </div>
+            <div class="macro-progress-bg">
+              <div id="carbsProgressBar" class="macro-progress-fill" style="width: 0%;"></div>
+            </div>
+            <span id="carbsKcal" class="macro-kcal">0 kcal</span>
+          </div>
+
+          <div class="macro-item macro-fat">
+            <div class="macro-header">
+              <span class="macro-title">Fat</span>
+              <span id="fatStat" class="macro-amount">0g / 65g</span>
+            </div>
+            <div class="macro-progress-bg">
+              <div id="fatProgressBar" class="macro-progress-fill" style="width: 0%;"></div>
+            </div>
+            <span id="fatKcal" class="macro-kcal">0 kcal</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid: Add Entry Form & Food Log -->
+    <div class="content-grid">
+      <!-- Left Column: Add Entry -->
+      <section class="add-section">
+        <div class="card">
+          <h2>+ Log Food or Drink</h2>
+          <form id="foodForm" class="food-form">
+            <div class="form-group">
+              <label for="mealType">Meal Category</label>
+              <select id="mealType" required>
+                <option value="Breakfast">&#129379; Breakfast</option>
+                <option value="Lunch">&#129383; Lunch</option>
+                <option value="Dinner">&#127837; Dinner</option>
+                <option value="Snack">&#127822; Snack</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="foodName">Food / Drink Name</label>
+              <input type="text" id="foodName" placeholder="e.g. Grilled Chicken Salad" required autocomplete="off">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="calories">Calories (kcal) *</label>
+                <input type="number" id="calories" min="0" max="15000" placeholder="0" required>
+              </div>
+              <div class="form-group">
+                <label for="protein">Protein (g)</label>
+                <input type="number" id="protein" min="0" max="1000" step="0.1" placeholder="0">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="carbs">Carbs (g)</label>
+                <input type="number" id="carbs" min="0" max="1000" step="0.1" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="fat">Fat (g)</label>
+                <input type="number" id="fat" min="0" max="1000" step="0.1" placeholder="0">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Add to Daily Log</button>
+          </form>
+
+          <!-- Quick presets for immediate testing & ease of use -->
+          <div class="quick-presets">
+            <p class="presets-title">Quick Add Popular Items:</p>
+            <div class="preset-chips">
+              <button type="button" class="chip" data-name="Apple (medium)" data-kcal="95" data-protein="0.5" data-carbs="25" data-fat="0.3" data-meal="Snack">+ Apple (95 kcal)</button>
+              <button type="button" class="chip" data-name="Boiled Egg (2 pcs)" data-kcal="155" data-protein="13" data-carbs="1.1" data-fat="11" data-meal="Breakfast">+ 2 Eggs (155 kcal)</button>
+              <button type="button" class="chip" data-name="Chicken Breast (150g)" data-kcal="247" data-protein="46" data-carbs="0" data-fat="5.4" data-meal="Lunch">+ Chicken 150g (247 kcal)</button>
+              <button type="button" class="chip" data-name="Greek Yogurt (200g)" data-kcal="130" data-protein="20" data-carbs="7" data-fat="2" data-meal="Breakfast">+ Greek Yogurt (130 kcal)</button>
+              <button type="button" class="chip" data-name="Brown Rice (1 cup cooked)" data-kcal="216" data-protein="5" data-carbs="45" data-fat="1.8" data-meal="Dinner">+ Brown Rice (216 kcal)</button>
+              <button type="button" class="chip" data-name="Whey Protein Shake" data-kcal="140" data-protein="25" data-carbs="3" data-fat="2" data-meal="Snack">+ Protein Shake (140 kcal)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Meals List -->
+      <section class="meals-section">
+        <div class="meals-header-bar">
+          <h2>Foods Logged for <span id="currentDateDisplayTitle">Today</span></h2>
+          <div class="meals-actions">
+            <button id="clearDayBtn" class="btn btn-danger btn-sm" title="Clear all entries for this date">&#128465; Clear Day</button>
+          </div>
+        </div>
+
+        <div id="mealsContainer" class="meals-container">
+          <!-- Meal cards will be dynamically rendered here -->
+        </div>
+
+        <!-- Empty State (shown when no items logged) -->
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">&#127858;</div>
+          <h3>No foods logged for this date</h3>
+          <p>Use the form or quick items on the left to track what you eat today.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Data Management Footer -->
+    <footer class="footer">
+      <div class="data-actions">
+        <button id="exportDataBtn" class="btn btn-secondary btn-sm">&#128190; Export Backup JSON</button>
+        <label class="btn btn-secondary btn-sm file-input-label">
+          &#128194; Import JSON
+          <input type="file" id="importDataInput" accept=".json" style="display: none;">
+        </label>
+        <button id="resetAllBtn" class="btn btn-outline-danger btn-sm">&#9888; Reset All Stored Data</button>
+      </div>
+      <p class="footer-note">All data is kept 100% locally in your web browser's storage.</p>
+    </footer>
+  </div>
+
+  <!-- Settings Modal (Daily Targets) -->
+  <div id="settingsModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Adjust Daily Nutrition Goals</h3>
+        <button id="closeModalBtn" class="modal-close">&times;</button>
+      </div>
+      <form id="settingsForm" class="modal-form">
+        <div class="form-group">
+          <label for="goalInputCalories">Daily Calorie Target (kcal)</label>
+          <input type="number" id="goalInputCalories" min="500" max="10000" required>
+        </div>
+        <div class="form-group">
+          <label for="goalInputProtein">Daily Protein Goal (grams)</label>
+          <input type="number" id="goalInputProtein" min="0" max="1000" required>
+        </div>
+        <div class="form-group">
+          <label for="goalInputCarbs">Daily Carbs Goal (grams)</label>
+          <input type="number" id="goalInputCarbs" min="0" max="1000" required>
+        </div>
+        <div class="form-group">
+          <label for="goalInputFat">Daily Fat Goal (grams)</label>
+          <input type="number" id="goalInputFat" min="0" max="1000" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelSettingsBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Targets</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
